@@ -8,7 +8,7 @@ using static Domain.StaticObjects.PriorityEnums;
 
 namespace Domain.Entities
 {
-    public class Task
+    public class MyTask
     {
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }

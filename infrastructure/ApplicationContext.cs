@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace infrastructure
 {
-    public class ApplocationContext:DbContext
+    public class ApplicationContext:DbContext
     {
-        public ApplocationContext(DbContextOptions<ApplocationContext> optons):base(optons)
+        public ApplicationContext(DbContextOptions<ApplicationContext> optons):base(optons)
         {
             
         }

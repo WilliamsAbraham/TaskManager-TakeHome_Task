@@ -10,8 +10,8 @@ namespace infrastructure.Repository
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         private readonly DbSet<TEntity> dbset;
-        private readonly ApplocationContext Context;
-        public Repository(DbSet<TEntity> _dbset, ApplocationContext _context)
+        private readonly ApplicationContext Context;
+        public Repository(DbSet<TEntity> _dbset, ApplicationContext _context)
         {
                Context = _context;
                dbset = Context.Set<TEntity>();

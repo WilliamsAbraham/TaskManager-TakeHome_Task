@@ -13,6 +13,7 @@ namespace Application.Interfaces
 
         Task<IEnumerable<MyTask>> GetAllTasksDueWithin48Hours();
         Task<IEnumerable<MyTask>> GetTasksBasedOnPriority(PriorityType priorityType);
-        Task<MyTask> AddOrRemoveTaskFromProject(int projectId, int taskId);
+        Task<MyTask> AddOrRemoveTaskFromProject(Guid projectId, int taskId);
+        Task<MyTask> MarKTaskComplete(Guid taskId);
     }
 }

@@ -12,7 +12,6 @@ namespace Domain.Entities
         public  Guid UserId { get; set; }
         public string Title { get; set; }
         public DateTime DateCreated { get; set; }
-        public string CreatedBy { get; set;} 
         public User User { get; set; }
         public ICollection<MyTask> MyTasks { get; set; }
     }

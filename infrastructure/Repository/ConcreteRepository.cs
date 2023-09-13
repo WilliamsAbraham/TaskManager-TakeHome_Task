@@ -11,7 +11,7 @@ namespace infrastructure.Repository
     {
         private readonly DbSet<TEntity> dbset;
         private readonly ApplicationContext Context;
-        public Repository(DbSet<TEntity> _dbset, ApplicationContext _context)
+        public Repository(ApplicationContext _context)
         {
                Context = _context;
                dbset = Context.Set<TEntity>();
@@ -26,9 +26,9 @@ namespace infrastructure.Repository
             dbset.Remove(entity);
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        public async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await dbset.ToListAsync();
+            return await dbset.ToListAsync(cancellationToken);
         }
 
         public async Task<TEntity> GetByIdAsync(Guid id)

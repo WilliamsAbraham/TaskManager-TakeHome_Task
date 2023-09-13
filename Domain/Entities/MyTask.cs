@@ -19,7 +19,7 @@ namespace Domain.Entities
         public PriorityType Priority { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DueDate { get; set; }
-        public Project Project { get; set; }
+        public  MyProject Project { get; set; }
         public User User { get; set; }
     }
 }

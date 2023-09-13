@@ -43,12 +43,12 @@ namespace Application.Services.TaskService
             return myTask;
         }
 
-        public async Task<IEnumerable<MyTask>> GetAllTasksDueWithin48Hours()
+        public List<MyTask> GetAllTasksDueWithin48Hours()
         {
             var now = DateTime.UtcNow;
             var whenDue = now.AddHours(48);
 
-            return await context.MyTasks.Where(task =>task.DueDate >now && task.DueDate<=whenDue).ToListAsync();
+            return context.MyTasks.Where(task => task.DueDate > now && task.DueDate <= whenDue).ToList();
         }
 
         public async Task<IEnumerable<MyTask>> GetTasksBasedOnPriority(PriorityEnums.PriorityType priorityType)

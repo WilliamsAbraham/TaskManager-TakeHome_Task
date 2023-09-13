@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Interfaces;
+using Domain.Entities;
 using infrastructure.Repository;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services.NotificationService
 {
-    public class NotificationRepository
+    public class NotificationRepository :INotificationRepo
     {
         private readonly IRepository<Notification> repository;
 
@@ -17,28 +18,33 @@ namespace Application.Services.NotificationService
             repository = _repository;
         }
 
-        public async Task<IEnumerable<Notification>> GetAllTasks()
+        public async Task<IEnumerable<Notification>> GetAllNotice(CancellationToken cancellationToken)
         {
-            return await repository.GetAllAsync();
+            return await repository.GetAllAsync(cancellationToken);
         }
 
-        public async Task<Notification> GetTaskById(Guid id)
+        public async Task<Notification> GetNoticeById(Guid id)
         {
             return await repository.GetByIdAsync(id);
         }
 
-        public async Task CreateTask(Notification notification)
+        public async Task CreateNotification(Notification notification)
         {
-            repository.AddAsync(notification);
+            await repository.AddAsync(notification);
         }
 
-        public async Task UpdateTask(Notification notification)
+        public async Task UpdateNotification(Guid id,Notification notification)
         {
-            repository.UpdateAsync(notification);
+            var noticeToUpdate = await repository.GetByIdAsync(id);
+            noticeToUpdate.Message = notification.Message;
+            noticeToUpdate.IsRead = notification.IsRead;
+            noticeToUpdate.Type = notification.Type;
+          await  repository.UpdateAsync(notification);
         }
-        public async Task DeleteTask(Notification notification)
+        public async Task DeleteNotification(Guid id)
         {
-            repository.DeleteAsync(notification);
+            var noticeToDelete = await repository.GetByIdAsync(id);
+          await  repository.DeleteAsync(noticeToDelete);
         }
     }
 }

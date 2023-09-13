@@ -24,9 +24,9 @@ namespace Presentation
             return myTask;
         }
 
-        public static Project ProjectMapper(ProjectDto projectDto)
+        public static MyProject ProjectMapper(ProjectDto projectDto)
         {
-            var project = new Project();
+            var project = new MyProject();
             project.Title = projectDto.Title;
             project.DateCreated =DateTime.Now;
             project.UserId = projectDto.UserId;

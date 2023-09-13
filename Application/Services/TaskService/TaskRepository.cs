@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Interfaces;
+using Domain.Entities;
 using infrastructure.Repository;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace Application.Services.TaskService
 {
     //This class uses the generic repository concrete implementation to create a data access logic for tasks entity
-    public class TaskRepository
+    public class TaskRepository :ITaskRepo
     {
         private readonly IRepository<MyTask> repository;
         public TaskRepository(IRepository<MyTask> _repository)
@@ -17,9 +18,9 @@ namespace Application.Services.TaskService
                 repository = _repository;
         }
 
-        public async Task<IEnumerable<MyTask>> GetAllTasks()
+        public async Task<IEnumerable<MyTask>> GetAllTasks(CancellationToken cancellationToken)
         {
-            return await repository.GetAllAsync();
+            return await repository.GetAllAsync(cancellationToken);
         }
 
         public async Task<MyTask> GetTaskById(Guid id)
@@ -29,16 +30,16 @@ namespace Application.Services.TaskService
 
         public async Task CreateTask(MyTask myTask)
         {
-            repository.AddAsync(myTask);
+           await repository.AddAsync(myTask);
         }
 
         public async Task UpdateTask(MyTask myTask)
         {
-            repository.UpdateAsync(myTask); 
+           await repository.UpdateAsync(myTask); 
         }
         public async Task DeleteTask(MyTask myTask)
         {
-            repository.DeleteAsync(myTask);
+           await repository.DeleteAsync(myTask);
         }
     }
 }

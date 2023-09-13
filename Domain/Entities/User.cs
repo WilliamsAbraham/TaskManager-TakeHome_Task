@@ -11,7 +11,7 @@ namespace Domain.Entities
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public ICollection<Project> Projects { get; set; }
+        public ICollection<MyProject> Projects { get; set; }
         public ICollection<MyTask> MyTasks { get; set; }
     }
 }

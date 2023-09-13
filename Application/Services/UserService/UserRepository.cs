@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Interfaces;
+using Domain.Entities;
 using infrastructure.Repository;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services.UserService
 {
-    public class UserRepository
+    public class UserRepository :IUSerRepo
     {
         private readonly IRepository<User> repository;
 
@@ -17,28 +18,33 @@ namespace Application.Services.UserService
             repository = _repository;
         }
 
-        public async Task<IEnumerable<User>> GetAllTasks()
+        public async Task<IEnumerable<User>> GetAllUsers(CancellationToken cancellationToken)
         {
-            return await repository.GetAllAsync();
+            return await repository.GetAllAsync(cancellationToken);
         }
 
-        public async Task<User> GetTaskById(Guid id)
+        public async Task<User> GetUserById(Guid id)
         {
             return await repository.GetByIdAsync(id);
         }
 
-        public async Task CreateTask(User user)
+        public async Task CreateUser(User user)
         {
-            repository.AddAsync(user);
+           await repository.AddAsync(user);
         }
 
-        public async Task UpdateTask(User user)
+        public async Task UpdateUser(Guid id,User user)
         {
-            repository.UpdateAsync(user);
+            var userToUpdate = await repository.GetByIdAsync(id);
+            userToUpdate.Name = user.Name;
+            userToUpdate.Email = user.Email;
+           
+           await repository.UpdateAsync(userToUpdate);
         }
-        public async Task DeleteTask(User user)
+        public async Task DeleteUser(Guid id)
         {
-            repository.DeleteAsync(user);
+            var userToDelete = await repository.GetByIdAsync(id);
+           await repository.DeleteAsync(userToDelete);
         }
     }
 }

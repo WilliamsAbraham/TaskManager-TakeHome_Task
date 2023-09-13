@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Interfaces;
+using Domain.Entities;
 using infrastructure.Repository;
 using System;
 using System.Collections.Generic;
@@ -9,37 +10,39 @@ using System.Threading.Tasks;
 namespace Application.Services.ProjectService
 {
     //This class uses the generic repository concrete implementation to create a data access logic for tasks entity
-    public class ProjectRepository
+    public class ProjectRepository : IProjectRepo
     {
-        private readonly IRepository<Project> repository;
+        private readonly IRepository<MyProject> repository;
 
-        public ProjectRepository(IRepository<Project> _repository)
+        public ProjectRepository(IRepository<MyProject> _repository)
         {
             repository = _repository;
         }
 
-        public async Task<IEnumerable<Project>> GetAllTasks()
+        public async Task<IEnumerable<MyProject>> GetAllProjects(CancellationToken cancellationToken)
         {
-            return await repository.GetAllAsync();
+            return await repository.GetAllAsync(cancellationToken);
         }
 
-        public async Task<Project> GetTaskById(Guid id)
+        public async Task<MyProject> GetProjectById(Guid id)
         {
             return await repository.GetByIdAsync(id);
         }
 
-        public async Task CreateTask(Project project)
+        public async Task CreateProject(MyProject project)
         {
-            repository.AddAsync(project);
+           await repository.AddAsync(project);
         }
 
-        public async Task UpdateTask(Project project)
+        public async Task UpdateProject(MyProject project)
         {
-            repository.UpdateAsync(project);
+           await repository.UpdateAsync(project);
         }
-        public async Task DeleteTask(Project project)
+        public async Task DeleteProject(MyProject project)
         {
-            repository.DeleteAsync(project);
+           await repository.DeleteAsync(project);
         }
+
+        
     }
 }

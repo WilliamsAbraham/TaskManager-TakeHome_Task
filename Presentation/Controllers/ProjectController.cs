@@ -1,82 +1,142 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Application.Services.NotificationService;
+using Application.Services.ProjectService;
+using AutoMapper;
+using Domain.Entities;
+using Domain.StaticObjects;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.DTOs;
 
 namespace Presentation.Controllers
 {
-    public class ProjectController : Controller
+    [ApiController]
+    [Route("[Controller]")]
+    public class ProjectController : ControllerBase
     {
-        // GET: ProjectController
-        public ActionResult Index()
+        private readonly ProjectRepository projectRepository;
+        private readonly IMapper mapper;
+        public ProjectController(ProjectRepository _projectRepository, IMapper _mapper)
         {
-            return View();
+            projectRepository = _projectRepository;
+            mapper = _mapper;
+
         }
 
-        // GET: ProjectController/Details/5
-        public ActionResult Details(int id)
+        //Get All Notifications
+        [HttpGet("/AllProject")]
+        public async Task<ActionResult<APIResponse<List<ProjectViewModel>>>> GetAllProject(CancellationToken cancellationToken)
         {
-            return View();
+            var projectsRetrieved = await projectRepository.GetAllProjects(cancellationToken);
+            var projects = mapper.Map<List<ProjectViewModel>>(projectsRetrieved);
+            return Ok(new APIResponse<List<ProjectViewModel>>
+            {
+                Status = true,
+                Data = projects,
+                Message = "projects retrived successfully",
+            });
+
         }
 
-        // GET: ProjectController/Create
-        public ActionResult Create()
+        //GET: NotificationController/5
+        [HttpGet("/Project/Id")]
+        public async Task<ActionResult<APIResponse<ProjectViewModel>>> GetProjectById([FromHeader]Guid id)
         {
-            return View();
+            var projectRetrieved = await projectRepository.GetProjectById(id);
+            var project = mapper.Map<ProjectViewModel>(projectRetrieved);
+            return Ok(new APIResponse<ProjectViewModel>
+            {
+                Status = true,
+                Data = project,
+                Message = "Project retrived successfully"
+            });
         }
 
-        // POST: ProjectController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        // POST: NotificationController/Create
+        [HttpPost("/new-project")]
+        public async Task<ActionResult<APIResponse<string>>> CreateProject(ProjectDto projectDto)
         {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "please correct the errors");
+            }
+            var project = mapper.Map<MyProject>(projectDto);
             try
             {
-                return RedirectToAction(nameof(Index));
+                await projectRepository.CreateProject(project);
+                return Ok(new APIResponse<string>
+                {
+                    Status = true,
+                    Data = null,
+                    Message = "Project Created Successfully"
+                });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return StatusCode(500, new APIResponse<object>
+                {
+                    Status = false,
+                    Data = null,
+                    Message = ex.Message,
+
+                });
             }
         }
 
-        // GET: ProjectController/Edit/5
-        public ActionResult Edit(int id)
+        //// PUT: NotificationController/Edit/5
+        [HttpPut("/EditProject/Id")]
+        public async Task<ActionResult<APIResponse<string>>> Edit([FromHeader] Guid id, ProjectDto projectDto)
         {
-            return View();
-        }
-
-        // POST: ProjectController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "please correct the errors");
+            }
+            var projectToUpdate = mapper.Map<MyProject>(projectDto);
             try
             {
-                return RedirectToAction(nameof(Index));
+                await projectRepository.UpdateProject(id, projectToUpdate);
+                return Ok(new APIResponse<string>
+                {
+                    Status = true,
+                    Data = null,
+                    Message = "Project Updated successfully"
+                });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return StatusCode(500, new APIResponse<object>
+                {
+                    Status = false,
+                    Data = null,
+                    Message = ex.Message,
+                });
             }
         }
 
-        // GET: ProjectController/Delete/5
-        public ActionResult Delete(int id)
+        //// POST: NotificationController/Delete/5
+        [HttpPost("/ProjectDeletion/Id")]
+        public async Task<ActionResult<APIResponse<string>>> Delete([FromHeader] Guid id)
         {
-            return View();
-        }
+            //var noticeToDelete = mapper.Map<Notification>(notificationDto);
 
-        // POST: ProjectController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
             try
             {
-                return RedirectToAction(nameof(Index));
+                await projectRepository.DeleteProject(id);
+                return Ok(new APIResponse<string>
+                {
+                    Status = true,
+                    Data = null,
+                    Message = "Project deleted successfully"
+                });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return StatusCode(500,
+                    new APIResponse<object>
+                    {
+                        Status = false,
+                        Data = null,
+                        Message = ex.Message,
+                    });
             }
         }
     }

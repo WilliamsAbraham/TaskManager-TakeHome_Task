@@ -18,16 +18,26 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(Program));
+
 builder.Services.AddScoped<INotificationService, NotificationService>();
-builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<INotificationRepo, NotificationRepository>();
+builder.Services.AddScoped<NotificationRepository>();
+
+
 builder.Services.AddScoped<IProjectRepo, ProjectRepository>();
+builder.Services.AddScoped<ProjectRepository>();
+
 builder.Services.AddScoped<IUSerRepo,UserRepository>();
+builder.Services.AddScoped<UserRepository>();
+
+builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITaskRepo,TaskRepository>();
-builder.Services.AddScoped<INotificationRepo,NotificationRepository>();
+builder.Services.AddScoped<TaskRepository>();
+
 builder.Services.AddScoped<NoticeBackGroundService>();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
-options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnect")));
+options.UseMySQL("Server=localhost;Database=Taskmanager;Uid=root;Pwd=Mypospass;"));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

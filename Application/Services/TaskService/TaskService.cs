@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.StaticObjects;
 using infrastructure;
@@ -20,65 +21,64 @@ namespace Application.Services.TaskService
             
         }
 
-        public async Task<MyTask> AddOrRemoveTaskFromProject(Guid projectId, int taskId)
+        public async Task<MyTask> AddOrRemoveTaskFromProject(Guid projectId, Guid taskId)
         {
             //check if project and task are not null
-            var myTask = await context.MyTasks.FindAsync(taskId);
-            var project = await context.Projects.FindAsync(projectId);
+            var myTask = await context.MyTasks.FindAsync(taskId)
+            ?? throw new NotFoundException($"the task with id{taskId} was not found");
 
-            if (project!=null && myTask != null)
-            {
-                //check if project exists
-
-                if(project!=null)
-                {
-                    
-                    myTask.ProjectId = projectId;
-                     context.Update(myTask);
-                    await context.SaveChangesAsync();
-                }
-                return null;
-               
-            }
+            var project = await context.Projects.FindAsync(projectId)
+            ?? throw new NotFoundException($"the project with id{projectId} was not found");
+            
+            myTask.ProjectId = project.Id;
+            context.Update(myTask);
+            await context.SaveChangesAsync();
             return myTask;
         }
 
-        public List<MyTask> GetAllTasksDueWithin48Hours()
+        public async Task<MyTask> AssignTaskToUser(Guid userId, Guid taskId)
+        {
+            var task = await context.MyTasks.FindAsync(taskId)
+            ?? throw new NotFoundException($"the task with id{taskId} was not found");
+
+            var user = await context.Users.FindAsync(userId)
+            ?? throw new NotFoundException($"the user with id{userId} was not found");
+     
+                task.UserId = user.Id;
+                context.Update(task);
+                await context.SaveChangesAsync();
+                return task;
+        }
+
+        //To be called by an undergrond service
+        public async Task<IEnumerable<MyTask>> GetAllTasksDueWithin48Hours()
         {
             var now = DateTime.UtcNow;
             var whenDue = now.AddHours(48);
 
-            return context.MyTasks.Where(task => task.DueDate > now && task.DueDate <= whenDue).ToList();
+            return await context.MyTasks.Where(task => task.DueDate > now && task.DueDate <= whenDue).ToListAsync();
         }
 
         public async Task<IEnumerable<MyTask>> GetTasksBasedOnPriority(PriorityEnums.PriorityType priorityType)
         {
-            var  taskBasedOnPriority = await context.MyTasks.Where(t=>t.Priority == priorityType).ToListAsync();
             if(!Enum.TryParse(typeof(PriorityEnums.PriorityType), priorityType.ToString(), out var priority))
             {
-                return null;
+              throw new NotFoundException($"the priority type parsed {priority} is invalid");
             }
+            var taskBasedOnPriority = await context.MyTasks.Where(t => t.Priority == priorityType).ToListAsync()
+            ?? throw new NotFoundException($"No task based on {priority} type was found");
 
-            if(taskBasedOnPriority.Count == 0)
-            {
-                return null;
-            }
             return taskBasedOnPriority;
         }
 
         public async Task<MyTask> MarKTaskComplete(Guid taskId)
         {
-            var completedTask = await context.MyTasks.Where(t=>t.Id == taskId).FirstOrDefaultAsync();
-            if(completedTask != null)
-            {
+            var completedTask = await context.MyTasks.Where(t=>t.Id == taskId).FirstOrDefaultAsync()
+             ?? throw new NotFoundException($"the task with id {taskId} does not exist");
                 completedTask.IsCompleted = true;
                 context.Update(completedTask);
-                context.SaveChangesAsync();
-            }
-            else
-            {
-                return null;
-            }
+               await  context.SaveChangesAsync();
+          
             return completedTask;
         }
 

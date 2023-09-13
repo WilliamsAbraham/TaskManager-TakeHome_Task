@@ -11,9 +11,10 @@ namespace Application.Interfaces
     public interface ITaskService
     {
 
-        List<MyTask> GetAllTasksDueWithin48Hours();
+        Task<IEnumerable<MyTask>> GetAllTasksDueWithin48Hours();
         Task<IEnumerable<MyTask>> GetTasksBasedOnPriority(PriorityType priorityType);
-        Task<MyTask> AddOrRemoveTaskFromProject(Guid projectId, int taskId);
+        Task<MyTask> AddOrRemoveTaskFromProject(Guid projectId, Guid taskId);
         Task<MyTask> MarKTaskComplete(Guid taskId);
+        Task<MyTask> AssignTaskToUser(Guid userId, Guid taskId);
     }
 }

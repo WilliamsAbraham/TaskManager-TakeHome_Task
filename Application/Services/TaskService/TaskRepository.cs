@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Interfaces;
 using Domain.Entities;
 using infrastructure.Repository;
 using System;
@@ -20,12 +21,14 @@ namespace Application.Services.TaskService
 
         public async Task<IEnumerable<MyTask>> GetAllTasks(CancellationToken cancellationToken)
         {
-            return await repository.GetAllAsync(cancellationToken);
+            return await repository.GetAllAsync(cancellationToken) 
+                ?? throw new NotFoundException($"No Task was found");
         }
 
         public async Task<MyTask> GetTaskById(Guid id)
         {
-            return await repository.GetByIdAsync(id);
+            return await repository.GetByIdAsync(id) 
+            ?? throw new NotFoundException($"The Task with id{id} was not found");
         }
 
         public async Task CreateTask(MyTask myTask)
@@ -33,13 +36,25 @@ namespace Application.Services.TaskService
            await repository.AddAsync(myTask);
         }
 
-        public async Task UpdateTask(MyTask myTask)
+        public async Task UpdateTask(Guid id,MyTask myTask)
         {
-           await repository.UpdateAsync(myTask); 
+            var taskToUpdate = await repository.GetByIdAsync(id) 
+                ?? throw new NotFoundException($"The Task with id{id} was not found");
+            taskToUpdate.Description = myTask.Description;
+            taskToUpdate.Priority = myTask.Priority;
+            taskToUpdate.Title = myTask.Title;
+            taskToUpdate.Priority = myTask.Priority;
+            taskToUpdate.DueDate = myTask.DueDate;
+            taskToUpdate.IsCompleted = myTask.IsCompleted;
+      
+           await repository.UpdateAsync(taskToUpdate); 
         }
-        public async Task DeleteTask(MyTask myTask)
+        public async Task DeleteTask(Guid id)
         {
-           await repository.DeleteAsync(myTask);
+            var taskToDelete = await repository.GetByIdAsync(id)
+                ?? throw new NotFoundException($"The Task with id{id} was not found");
+
+            await repository.DeleteAsync(taskToDelete);
         }
     }
 }

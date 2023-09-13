@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Interfaces;
 using Domain.Entities;
 using infrastructure.Repository;
 using System;
@@ -20,12 +21,16 @@ namespace Application.Services.NotificationService
 
         public async Task<IEnumerable<Notification>> GetAllNotice(CancellationToken cancellationToken)
         {
-            return await repository.GetAllAsync(cancellationToken);
+            return await repository.GetAllAsync(cancellationToken)
+           ?? throw new NotFoundException($"No notification was found");
+
         }
 
         public async Task<Notification> GetNoticeById(Guid id)
         {
-            return await repository.GetByIdAsync(id);
+            return await repository.GetByIdAsync(id)
+           ?? throw new NotFoundException($"the Notice with id{id} was not found");
+
         }
 
         public async Task CreateNotification(Notification notification)
@@ -35,7 +40,9 @@ namespace Application.Services.NotificationService
 
         public async Task UpdateNotification(Guid id,Notification notification)
         {
-            var noticeToUpdate = await repository.GetByIdAsync(id);
+            var noticeToUpdate = await repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"the notice with id{id} was not found");
+
             noticeToUpdate.Message = notification.Message;
             noticeToUpdate.IsRead = notification.IsRead;
             noticeToUpdate.Type = notification.Type;
@@ -43,7 +50,8 @@ namespace Application.Services.NotificationService
         }
         public async Task DeleteNotification(Guid id)
         {
-            var noticeToDelete = await repository.GetByIdAsync(id);
+            var noticeToDelete = await repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"the notice with id{id} was not found");
           await  repository.DeleteAsync(noticeToDelete);
         }
     }

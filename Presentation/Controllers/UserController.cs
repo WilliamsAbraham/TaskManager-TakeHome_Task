@@ -21,11 +21,12 @@ namespace Presentation.Controllers
             mapper = _mapper;
         }
         [HttpGet("/AllUsers")]
-        public async Task<ActionResult<APIResponse<List<UserDto>>>> GetAllUsers(CancellationToken cancellationToken)
+        public async Task<ActionResult<APIResponse<List<UserViewModel>>>> GetAllUsers(CancellationToken cancellationToken)
         {
+
             var usersRetrievd = await userRepository.GetAllUsers(cancellationToken);
-            var users = mapper.Map<List<UserDto>>(usersRetrievd);
-            return Ok(new APIResponse<List<UserDto>>
+            var users = mapper.Map<List<UserViewModel>>(usersRetrievd);
+            return Ok(new APIResponse<List<UserViewModel>>
             {
                 Status = true,
                 Data = users,
@@ -35,13 +36,12 @@ namespace Presentation.Controllers
         }
 
 
-        //GET: NotificationController/5
-        [HttpGet("/user/{Id:Guid}")]
-        public async Task<ActionResult<APIResponse<UserDto>>> GetUserById(Guid id)
+        [HttpGet("/User")]
+        public async Task<ActionResult<APIResponse<UserViewModel>>> GetUserById([FromHeader]Guid id)
         {
             var userRetrieved = await userRepository.GetUserById(id);
-            var user = mapper.Map<UserDto>(userRetrieved);
-            return Ok(new APIResponse<UserDto>
+            var user = mapper.Map<UserViewModel>(userRetrieved);
+            return Ok(new APIResponse<UserViewModel>
             {
                 Status = true,
                 Data = user,
@@ -51,9 +51,13 @@ namespace Presentation.Controllers
 
         // POST: NotificationController/Create
         [HttpPost("/new-User")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<ActionResult<APIResponse<string>>> CreateUser(UserDto userDto)
         {
+            if(!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "please correct the errors");
+            }
             var user = mapper.Map<User>(userDto);
             try
             {
@@ -78,10 +82,14 @@ namespace Presentation.Controllers
         }
 
         //// PUT: NotificationController/Edit/5
-        [HttpPut("/user/{Id:Guid}")]
+        [HttpPut("/user/Id")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult<APIResponse<string>>> Edit(Guid id,UserDto userDto)
+        public async Task<ActionResult<APIResponse<string>>> Edit([FromHeader]Guid id,UserDto userDto)
         {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "please correct the errors");
+            }
             var userToUpdate = mapper.Map<User>(userDto);
             try
             {
@@ -105,11 +113,14 @@ namespace Presentation.Controllers
         }
 
         //// POST: NotificationController/Delete/5
-        [HttpPost("/UserDeletion/{Id:Guid}")]
+        [HttpPost("/UserDeletion")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult<APIResponse<string>>> Delete(Guid id,UserDto userDto)
+        public async Task<ActionResult<APIResponse<string>>> Delete([FromHeader]Guid id)
         {
-            var userToDelete = mapper.Map<User>(userDto);
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "please correct the errors");
+            }
 
             try
             {

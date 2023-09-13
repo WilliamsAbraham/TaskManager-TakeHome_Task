@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Interfaces;
 using Domain.Entities;
 using infrastructure.Repository;
 using System;
@@ -20,31 +21,37 @@ namespace Application.Services.UserService
 
         public async Task<IEnumerable<User>> GetAllUsers(CancellationToken cancellationToken)
         {
-            return await repository.GetAllAsync(cancellationToken);
+            return await repository.GetAllAsync(cancellationToken)
+            ?? throw new NotFoundException($"No user was found");
         }
 
         public async Task<User> GetUserById(Guid id)
         {
-            return await repository.GetByIdAsync(id);
+            return await repository.GetByIdAsync(id)
+                ?? throw new NotFoundException($"the user with id{id} was not found");
         }
 
         public async Task CreateUser(User user)
         {
-           await repository.AddAsync(user);
+            await repository.AddAsync(user);
         }
 
         public async Task UpdateUser(Guid id,User user)
         {
-            var userToUpdate = await repository.GetByIdAsync(id);
-            userToUpdate.Name = user.Name;
+            var userToUpdate = await repository.GetByIdAsync(id)
+           ?? throw new NotFoundException($"the user with id{id} was not found");
+
+            userToUpdate.UserName = user.UserName;
             userToUpdate.Email = user.Email;
            
            await repository.UpdateAsync(userToUpdate);
         }
         public async Task DeleteUser(Guid id)
         {
-            var userToDelete = await repository.GetByIdAsync(id);
-           await repository.DeleteAsync(userToDelete);
+            var userToDelete = await repository.GetByIdAsync(id)
+           ?? throw new NotFoundException($"the user with id{id} was not found");
+
+            await repository.DeleteAsync(userToDelete);
         }
     }
 }

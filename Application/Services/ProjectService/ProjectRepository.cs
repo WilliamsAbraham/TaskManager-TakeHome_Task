@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Interfaces;
 using Domain.Entities;
 using infrastructure.Repository;
 using System;
@@ -21,12 +22,14 @@ namespace Application.Services.ProjectService
 
         public async Task<IEnumerable<MyProject>> GetAllProjects(CancellationToken cancellationToken)
         {
-            return await repository.GetAllAsync(cancellationToken);
+            return await repository.GetAllAsync(cancellationToken) 
+                ?? throw new NotFoundException($"No Project was found");
         }
 
         public async Task<MyProject> GetProjectById(Guid id)
         {
-            return await repository.GetByIdAsync(id);
+            return await repository.GetByIdAsync(id) 
+                ?? throw new NotFoundException($"The Project with id{id} was not found");
         }
 
         public async Task CreateProject(MyProject project)
@@ -34,13 +37,19 @@ namespace Application.Services.ProjectService
            await repository.AddAsync(project);
         }
 
-        public async Task UpdateProject(MyProject project)
+        public async Task UpdateProject(Guid id,MyProject project)
         {
-           await repository.UpdateAsync(project);
+            var projToUpdate = await repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"The Project with id{id} was not found");
+            projToUpdate.Title = project.Title;
+            
+           await repository.UpdateAsync(projToUpdate);
         }
-        public async Task DeleteProject(MyProject project)
+        public async Task DeleteProject(Guid id)
         {
-           await repository.DeleteAsync(project);
+            var projToDelete = await repository.GetByIdAsync(id) 
+                ?? throw new NotFoundException($"The Project with id{id} was not found");
+            await repository.DeleteAsync(projToDelete);
         }
 
         

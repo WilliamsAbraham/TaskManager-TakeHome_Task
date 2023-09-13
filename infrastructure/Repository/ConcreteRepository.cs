@@ -18,12 +18,20 @@ namespace infrastructure.Repository
         }
         public async Task AddAsync(TEntity entity)
         {
-            await dbset.AddAsync(entity);    
+          var res =  await dbset.AddAsync(entity); 
+            if(res.Entity == null)
+            {
+
+                throw new InvalidOperationException("Something went wrong");
+            }
+            await Context.SaveChangesAsync();
+            
         }
 
         public async Task DeleteAsync(TEntity entity)
         {
             dbset.Remove(entity);
+            await Context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken)
@@ -39,6 +47,7 @@ namespace infrastructure.Repository
         public async Task UpdateAsync(TEntity entity)
         {
             dbset.Update(entity);
+            await Context.SaveChangesAsync();
         }
     }
 }

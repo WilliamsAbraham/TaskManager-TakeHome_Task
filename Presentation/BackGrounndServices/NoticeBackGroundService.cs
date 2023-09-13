@@ -31,12 +31,12 @@ namespace Presentation.BackGrounndServices
 
         private async Task CheckTaskUpdate()
         {
-            var taskDueWithin48Hours = taskService.GetAllTasksDueWithin48Hours();
+            var taskDueWithin48Hours =await taskService.GetAllTasksDueWithin48Hours();
 
             foreach (var task in taskDueWithin48Hours)
             {
                 var notice = new Notification();
-                notice.Message = $"{task.Title} by {task.User.Name} will be due within 48 hours";
+                notice.Message = $"{task.Title} by {task.User.UserName} will be due within 48 hours";
                 notice.Type = NotificationType.DuedateReminder;
                 notice.IsRead = false;
 

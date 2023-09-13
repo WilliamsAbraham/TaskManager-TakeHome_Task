@@ -9,9 +9,13 @@ namespace Presentation.AutomaperProfiles
         public AutomapperProfiles()
         {
                 CreateMap<Notification,NotificationDto>().ReverseMap();
+                CreateMap<Notification,NotificationViewModel>().ReverseMap();
                 CreateMap<User,UserDto>().ReverseMap();
+                CreateMap<User,UserViewModel>().ReverseMap();
                 CreateMap<MyTask,TaskDto>().ReverseMap();
+                CreateMap<MyTask,TaskViewModel>().ReverseMap();
                 CreateMap<MyProject,ProjectDto>().ReverseMap();
+                CreateMap<MyProject,ProjectViewModel>().ReverseMap();
         }
     }
 }

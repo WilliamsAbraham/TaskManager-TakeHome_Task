@@ -2,10 +2,10 @@
 
 # We use these packages:
 - EntityFrameworkCore
-- Microsoft.EntityFrameworkCore.SqlServer
 - Microsoft.EntityFrameworkCore.Tools
 - MySql.EntityFramworkCore
 - MediatR
+- SendGrid 
 
 
 ## Features of this repository:
@@ -24,4 +24,12 @@ users will be notified when:
 - They are assigned a new task.
   
 The notifcations where implemented within a notification handler using MediatR with a background service to handle the notification of tasks due with 48 hours.
+
+#PROJECT SET-UP
+- Clone or download the main branch of the repo
+- run dotnet restore(Nuget package manager console) command to restore the projects along all packages(Make sure you're connected to the internet)
+- Set-up your data base (MySql or MsSqls Server)
+- Update the ConnectionString's DefaultConnect Node in the appsettings file of the presentation layer
+- Also update the Sendgrid API KEY Node in the appsettings file of the presentation layer
+- Run the Update-database (Nuget package manager console) command to update your database with the project schema
 

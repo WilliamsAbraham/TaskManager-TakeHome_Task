@@ -32,4 +32,5 @@ The notifcations where implemented within a notification handler using MediatR w
 - Update the ConnectionString's DefaultConnect Node in the appsettings file of the presentation layer
 - Also update the Sendgrid API KEY Node in the appsettings file of the presentation layer
 - Run the Update-database (Nuget package manager console) command to update your database with the project schema
+- Rn the project and navigate to https://localhost:{your port}/swagger/index.html 
 

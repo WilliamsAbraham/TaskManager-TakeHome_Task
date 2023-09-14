@@ -12,7 +12,7 @@ The API is a task management Api
 - "Microsoft.EntityFrameworkCore.Tools"
 
 
-## Topics covered in this repository:
+## Features of this repository:
 
 - Dtos
 - Static classes

@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Handlers;
+using Application.Interfaces;
 using Application.Services.NotificationService;
 using Domain.Entities;
 using MediatR;
@@ -12,18 +13,20 @@ using static Domain.StaticObjects.NotificationEnums;
 
 namespace Application.Notifications
 {
-    public record TaskCompleteNotice(MyTask Task):INotification;
+    public record TaskCompleteNoticeHandler(MyTask Task):INotification;
 
 
-    public class TaskCompleteNoticNoticeHandler : INotificationHandler<TaskCompleteNotice>
+    public class TaskCompleteNoticNoticeHandler : INotificationHandler<TaskCompleteNoticeHandler>
     {
         private readonly NotificationRepository notificationRepository;
-        public TaskCompleteNoticNoticeHandler(NotificationRepository _notificationRepo)
+        private readonly IMediator mediator;
+        public TaskCompleteNoticNoticeHandler(NotificationRepository _notificationRepo, IMediator mediator)
         {
             notificationRepository = _notificationRepo;
+            this.mediator = mediator;
         }
 
-        public async Task Handle(TaskCompleteNotice notification, CancellationToken cancellationToken)
+        public async Task Handle(TaskCompleteNoticeHandler notification, CancellationToken cancellationToken)
         {
             var notice = new Notification
             {
@@ -34,6 +37,7 @@ namespace Application.Notifications
                 To = notification.Task.User.Email
             };
             await notificationRepository.CreateNotification(notice);
+            await mediator.Publish(new EmailRequest(notice),cancellationToken);
 
         }
     }

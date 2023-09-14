@@ -12,6 +12,7 @@ namespace Application.Interfaces
     {
 
         Task<IEnumerable<MyTask>> GetAllTasksDueWithin48Hours();
+        Task<IEnumerable<MyTask>> GetAllTasksDueThisWeek();
         Task<IEnumerable<MyTask>> GetTasksBasedOnPriority(PriorityType priorityType);
         Task<MyTask> AddOrRemoveTaskFromProject(Guid projectId, Guid taskId);
         Task<MyTask> MarKTaskComplete(Guid taskId);

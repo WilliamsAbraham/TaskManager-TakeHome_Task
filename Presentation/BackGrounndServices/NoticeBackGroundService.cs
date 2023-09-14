@@ -39,7 +39,7 @@ namespace Presentation.BackGrounndServices
             foreach (var task in taskDueWithin48Hours)
             {
 
-                await mediator.Publish(new TaskDueWithin48HoursNotice(task));
+                await mediator.Publish(new TaskDueWithin48HoursNoticeHandler(task));
                // var notice = new Notification();
                // notice.Message = $"{task.Title} by {task.User.UserName} will be due within 48 hours";
                // notice.Type = NotificationType.DuedateReminder;

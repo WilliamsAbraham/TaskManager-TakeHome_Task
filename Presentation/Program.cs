@@ -6,21 +6,24 @@ using Application.Services.ProjectService;
 using Application.Services.TaskService;
 using Application.Services.UserService;
 using infrastructure;
+using infrastructure.Externals;
 using infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.OpenApi.Models;
 using Presentation.BackGrounndServices;
+using SendGrid;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+var sendgridkey = builder.Configuration[""];
 
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-//builder.Services.AddScoped<IStringLocalizer>();
+builder.Services.AddSingleton(new SendGridClient(sendgridkey));
+builder.Services.AddSingleton<IEmailSender,SenGridEmailService>();
 
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<INotificationRepo, NotificationRepository>();
@@ -40,7 +43,7 @@ builder.Services.AddScoped<TaskRepository>();
 builder.Services.AddScoped<NoticeBackGroundService>();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
-options.UseMySQL("Server=localhost;Database=Taskmanager;Uid=root;Pwd=Mypospass;"));
+options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnect")));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

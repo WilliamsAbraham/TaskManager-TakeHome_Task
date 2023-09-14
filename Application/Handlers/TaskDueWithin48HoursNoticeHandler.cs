@@ -1,6 +1,8 @@
-﻿using Application.Services.NotificationService;
+﻿using Application.Handlers;
+using Application.Services.NotificationService;
 using Application.Services.TaskService;
 using Domain.Entities;
+using infrastructure.Externals;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,20 +13,22 @@ using static Domain.StaticObjects.NotificationEnums;
 
 namespace Application.Notifications
 {
-    public record TaskDueWithin48HoursNotice(MyTask Task):INotification;
+    public record TaskDueWithin48HoursNoticeHandler(MyTask Task):INotification;
     
     
 
-    public class NotificehHandler : INotificationHandler<TaskDueWithin48HoursNotice>
+    public class NotificehHandler : INotificationHandler<TaskDueWithin48HoursNoticeHandler>
     {
         private readonly NotificationRepository notificationRepository;
-        public NotificehHandler(NotificationRepository _notificationRepository)
+        private readonly IMediator mediator;
+
+        public NotificehHandler(NotificationRepository _notificationRepository,IMediator _mediator)
         {
             this.notificationRepository = _notificationRepository;
-                
+            mediator = _mediator;
         }
 
-        public async Task Handle(TaskDueWithin48HoursNotice notification, CancellationToken cancellationToken)
+        public async Task Handle(TaskDueWithin48HoursNoticeHandler notification, CancellationToken cancellationToken)
         {
             var notice = new Notification
             {
@@ -34,6 +38,7 @@ namespace Application.Notifications
                 User = notification.Task.User
             };
             await notificationRepository.CreateNotification(notice);
+            await mediator.Publish(new EmailRequest(notice),cancellationToken);
         
         }
     }

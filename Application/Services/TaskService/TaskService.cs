@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,8 +51,17 @@ namespace Application.Services.TaskService
                 task.UserId = user.Id;
                 context.Update(task);
                 await context.SaveChangesAsync();
-             await mediator.Publish(new AssignedTaskNotice(task));
+             await mediator.Publish(new AssignedTaskNoticeHandler(task));
                 return task;
+        }
+
+        public async Task<IEnumerable<MyTask>> GetAllTasksDueThisWeek()
+        {
+            DateTime today = DateTime.Today;
+            DateTime startOfWeek = today.AddDays((int)CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek - (int)today.DayOfWeek);
+            DateTime endOfWeek = startOfWeek.AddDays(6);
+
+            return await context.MyTasks.Where(task=>task.DueDate >= startOfWeek && task.DueDate <= endOfWeek).ToListAsync();
         }
 
         //To be called by an undergrond service
@@ -85,7 +95,7 @@ namespace Application.Services.TaskService
                await  context.SaveChangesAsync();
 
           //publish this event
-             await mediator.Publish(new TaskCompleteNotice(completedTask));
+             await mediator.Publish(new TaskCompleteNoticeHandler(completedTask));
              return completedTask;
 
 

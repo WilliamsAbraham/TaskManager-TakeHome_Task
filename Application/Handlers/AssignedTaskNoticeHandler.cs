@@ -1,4 +1,5 @@
-﻿using Application.Services.NotificationService;
+﻿using Application.Handlers;
+using Application.Services.NotificationService;
 using Application.Services.TaskService;
 using Domain.Entities;
 using MediatR;
@@ -15,9 +16,11 @@ namespace Application.Notifications
     public class AssignedTaskNoticeHandler : INotificationHandler<AssignedTaskNotice>
     {
         private readonly NotificationRepository notificationRepository;
-        public AssignedTaskNoticeHandler(NotificationRepository notification)
+        private readonly IMediator mediator;
+        public AssignedTaskNoticeHandler(NotificationRepository notification, IMediator mediator)
         {
             notificationRepository = notification;
+            this.mediator = mediator;
         }
 
         public async Task Handle(AssignedTaskNotice notification, CancellationToken cancellationToken)
@@ -31,6 +34,7 @@ namespace Application.Notifications
                 To = notification.Task.User.Email
             };
             await notificationRepository.CreateNotification(notice);
+            await mediator.Publish(new EmailRequest(notice),cancellationToken);
         }
     }
 }

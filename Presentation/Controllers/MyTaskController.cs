@@ -32,7 +32,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("/AllTask")]
-        public async Task<ActionResult<APIResponse<List<TaskViewModel>>>> GetAllNotifications(CancellationToken cancellationToken)
+        public async Task<ActionResult<APIResponse<List<TaskViewModel>>>> GetAllTask(CancellationToken cancellationToken)
         {
             var tasksRetrieved = await taskRepository.GetAllTasks(cancellationToken);
            
@@ -47,7 +47,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("{id:Guid}")]
-        public async Task<ActionResult<APIResponse<TaskViewModel>>> GetNotificationById( Guid id)
+        public async Task<ActionResult<APIResponse<TaskViewModel>>> GetTaskById( Guid id)
         {
            try
             {
@@ -58,6 +58,29 @@ namespace Presentation.Controllers
                     Status = true,
                     Data = task,
                     Message = "Task retrived successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new APIResponse<string>
+                {
+                    Status = false,
+                    Message = ex.Message
+                });
+            }
+        }
+        [HttpGet("/All-Task-Due-This-week")]
+        public async Task<ActionResult<APIResponse<List<TaskViewModel>>>> GetAllTasksDueThisWeek( )
+        {
+           try
+            {
+                var taskRetrieved = await taskService.GetAllTasksDueThisWeek();
+                var task = mapper.Map<List<TaskViewModel>>(taskRetrieved);
+                return Ok(new APIResponse<List<TaskViewModel>>
+                {
+                    Status = true,
+                    Data = task,
+                    Message = "Tasks retrived successfully"
                 });
             }
             catch (Exception ex)

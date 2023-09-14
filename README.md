@@ -4,6 +4,7 @@
 - EntityFrameworkCore
 - Microsoft.EntityFrameworkCore.SqlServer
 - Microsoft.EntityFrameworkCore.Tools
+- MySql.EntityFramworkCore
 - MediatR
 
 

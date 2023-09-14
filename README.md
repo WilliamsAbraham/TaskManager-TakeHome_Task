@@ -1,4 +1,4 @@
-# ASP.NET 7 Web API JWT Authentication and Role-Based Authorization
+# ASP.NET 7 Web API Task Management Project
 
 ## What is this repository about?
 

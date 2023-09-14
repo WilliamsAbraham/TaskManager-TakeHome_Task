@@ -15,6 +15,7 @@ PROJECT ENDPOINTS
 - An endpoint to mark a notification as read or unread.
 ##
 NOTIFICATIONS
+users will be notified when:
 - A task's due date is within 48 hours.
 - A task they created is marked as completed.
 - They are assigned a new task.

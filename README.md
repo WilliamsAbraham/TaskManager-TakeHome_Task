@@ -1,6 +1,7 @@
 # ASP.NET 7 Web API Task Management Project
 
 # We use these packages:
+- Microsoft .Net 7
 - EntityFrameworkCore
 - Microsoft.EntityFrameworkCore.Tools
 - MySql.EntityFramworkCore

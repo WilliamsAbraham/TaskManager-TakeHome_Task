@@ -20,5 +20,6 @@ users will be notified when:
 - A task's due date is within 48 hours.
 - A task they created is marked as completed.
 - They are assigned a new task.
+  
 The notifcations where implemented within a notification handler using MediatR with a background service to handle the notification of tasks due with 48 hours.
 

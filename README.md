@@ -7,9 +7,9 @@
 The API is a task management Api 
 
 ## We use these packages:
-- "Microsoft.AspNetCore.Identity.EntityFrameworkCore"
-- "Microsoft.EntityFrameworkCore.SqlServer"
-- "Microsoft.EntityFrameworkCore.Tools"
+- EntityFrameworkCore
+- Microsoft.EntityFrameworkCore.SqlServer
+- Microsoft.EntityFrameworkCore.Tools
 
 
 ## Features of this repository:

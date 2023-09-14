@@ -1,8 +1,10 @@
 ﻿using Application.Common.Exceptions;
 using Application.Interfaces;
+using Application.Notifications;
 using Domain.Entities;
 using Domain.StaticObjects;
 using infrastructure;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,10 +17,11 @@ namespace Application.Services.TaskService
     public class TaskService : ITaskService
     {
         private readonly ApplicationContext context;
-        public TaskService(ApplicationContext applicationContext)
+        private readonly IMediator mediator;
+        public TaskService(ApplicationContext applicationContext,IMediator _mediator)
         {
             this.context = applicationContext;
-            
+            mediator = _mediator;
         }
 
         public async Task<MyTask> AddOrRemoveTaskFromProject(Guid projectId, Guid taskId)
@@ -39,14 +42,15 @@ namespace Application.Services.TaskService
         public async Task<MyTask> AssignTaskToUser(Guid userId, Guid taskId)
         {
             var task = await context.MyTasks.FindAsync(taskId)
-            ?? throw new NotFoundException($"the task with id{taskId} was not found");
+            ?? throw new NotFoundException($"the task with id {taskId} was not found");
 
             var user = await context.Users.FindAsync(userId)
-            ?? throw new NotFoundException($"the user with id{userId} was not found");
+            ?? throw new NotFoundException($"the user with id {userId} was not found");
      
                 task.UserId = user.Id;
                 context.Update(task);
                 await context.SaveChangesAsync();
+             await mediator.Publish(new AssignedTaskNotice(task));
                 return task;
         }
 
@@ -57,6 +61,7 @@ namespace Application.Services.TaskService
             var whenDue = now.AddHours(48);
 
             return await context.MyTasks.Where(task => task.DueDate > now && task.DueDate <= whenDue).ToListAsync();
+
         }
 
         public async Task<IEnumerable<MyTask>> GetTasksBasedOnPriority(PriorityEnums.PriorityType priorityType)
@@ -78,8 +83,12 @@ namespace Application.Services.TaskService
                 completedTask.IsCompleted = true;
                 context.Update(completedTask);
                await  context.SaveChangesAsync();
-          
-            return completedTask;
+
+          //publish this event
+             await mediator.Publish(new TaskCompleteNotice(completedTask));
+             return completedTask;
+
+
         }
 
         

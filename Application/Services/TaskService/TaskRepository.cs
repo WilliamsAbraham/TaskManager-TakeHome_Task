@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Domain.Entities;
 using infrastructure.Repository;
+using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,15 +15,18 @@ namespace Application.Services.TaskService
     public class TaskRepository :ITaskRepo
     {
         private readonly IRepository<MyTask> repository;
+        private readonly IStringLocalizer t;
+
         public TaskRepository(IRepository<MyTask> _repository)
         {
                 repository = _repository;
+           
         }
 
         public async Task<IEnumerable<MyTask>> GetAllTasks(CancellationToken cancellationToken)
         {
             return await repository.GetAllAsync(cancellationToken) 
-                ?? throw new NotFoundException($"No Task was found");
+                ?? throw new NotFoundException(t[$"No Task was found"]);
         }
 
         public async Task<MyTask> GetTaskById(Guid id)

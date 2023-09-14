@@ -1,6 +1,8 @@
 ﻿using Application.Interfaces;
+using Application.Notifications;
 using Domain.Entities;
 using infrastructure;
+using MediatR;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
@@ -15,12 +17,13 @@ namespace Presentation.BackGrounndServices
     {
         private readonly ITaskService taskService;
         private readonly ApplicationContext context;
+        private readonly IMediator mediator;
         
 
-        public NoticeBackGroundService(ITaskService _taskService,  ApplicationContext _context)
+        public NoticeBackGroundService(ITaskService _taskService,  ApplicationContext _context,IMediator _mediator)
         {
             taskService = _taskService;
-            
+            mediator = _mediator;
             context = _context;
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,13 +38,15 @@ namespace Presentation.BackGrounndServices
 
             foreach (var task in taskDueWithin48Hours)
             {
-                var notice = new Notification();
-                notice.Message = $"{task.Title} by {task.User.UserName} will be due within 48 hours";
-                notice.Type = NotificationType.DuedateReminder;
-                notice.IsRead = false;
 
-               await context.Notifications.AddAsync(notice);
-                context.SaveChanges();
+                await mediator.Publish(new TaskDueWithin48HoursNotice(task));
+               // var notice = new Notification();
+               // notice.Message = $"{task.Title} by {task.User.UserName} will be due within 48 hours";
+               // notice.Type = NotificationType.DuedateReminder;
+               // notice.IsRead = false;
+
+               //await context.Notifications.AddAsync(notice);
+               // context.SaveChanges();
             }
             
             

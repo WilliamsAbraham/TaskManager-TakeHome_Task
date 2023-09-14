@@ -29,7 +29,7 @@ namespace Application.Services.ProjectService
         public async Task<MyProject> GetProjectById(Guid id)
         {
             return await repository.GetByIdAsync(id) 
-                ?? throw new NotFoundException($"The Project with id{id} was not found");
+                ?? throw new NotFoundException($"The Project with id {id} was not found");
         }
 
         public async Task CreateProject(MyProject project)
@@ -40,7 +40,7 @@ namespace Application.Services.ProjectService
         public async Task UpdateProject(Guid id,MyProject project)
         {
             var projToUpdate = await repository.GetByIdAsync(id)
-            ?? throw new NotFoundException($"The Project with id{id} was not found");
+            ?? throw new NotFoundException($"The Project with id {id} was not found");
             projToUpdate.Title = project.Title;
             
            await repository.UpdateAsync(projToUpdate);
@@ -48,7 +48,7 @@ namespace Application.Services.ProjectService
         public async Task DeleteProject(Guid id)
         {
             var projToDelete = await repository.GetByIdAsync(id) 
-                ?? throw new NotFoundException($"The Project with id{id} was not found");
+                ?? throw new NotFoundException($"The Project with id {id} was not found");
             await repository.DeleteAsync(projToDelete);
         }
 

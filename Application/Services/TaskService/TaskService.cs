@@ -28,10 +28,10 @@ namespace Application.Services.TaskService
         {
             //check if project and task are not null
             var myTask = await context.MyTasks.FindAsync(taskId)
-            ?? throw new NotFoundException($"the task with id{taskId} was not found");
+            ?? throw new NotFoundException($"the task with id {taskId} was not found");
 
             var project = await context.Projects.FindAsync(projectId)
-            ?? throw new NotFoundException($"the project with id{projectId} was not found");
+            ?? throw new NotFoundException($"the project with id {projectId} was not found");
             
             myTask.ProjectId = project.Id;
             context.Update(myTask);

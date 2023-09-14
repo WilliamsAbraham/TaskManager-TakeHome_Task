@@ -38,8 +38,8 @@ namespace Presentation.Controllers
         }
 
         //GET: NotificationController/5
-        [HttpGet("/Project/Id")]
-        public async Task<ActionResult<APIResponse<ProjectViewModel>>> GetProjectById([FromHeader]Guid id)
+        [HttpGet("/Project/{id:Guid}")]
+        public async Task<ActionResult<APIResponse<ProjectViewModel>>> GetProjectById(Guid id)
         {
             var projectRetrieved = await projectRepository.GetProjectById(id);
             var project = mapper.Map<ProjectViewModel>(projectRetrieved);
@@ -83,8 +83,8 @@ namespace Presentation.Controllers
         }
 
         //// PUT: NotificationController/Edit/5
-        [HttpPut("/EditProject/Id")]
-        public async Task<ActionResult<APIResponse<string>>> Edit([FromHeader] Guid id, ProjectDto projectDto)
+        [HttpPut("/EditProject/{id:Guid}")]
+        public async Task<ActionResult<APIResponse<string>>> Edit(Guid id, ProjectDto projectDto)
         {
             if (!ModelState.IsValid)
             {
@@ -113,8 +113,8 @@ namespace Presentation.Controllers
         }
 
         //// POST: NotificationController/Delete/5
-        [HttpPost("/ProjectDeletion/Id")]
-        public async Task<ActionResult<APIResponse<string>>> Delete([FromHeader] Guid id)
+        [HttpPost("/ProjectDeletion/{id:Guid}")]
+        public async Task<ActionResult<APIResponse<string>>> Delete(Guid id)
         {
             //var noticeToDelete = mapper.Map<Notification>(notificationDto);
 

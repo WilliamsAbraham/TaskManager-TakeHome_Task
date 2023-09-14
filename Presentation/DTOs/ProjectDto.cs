@@ -8,7 +8,7 @@ namespace Presentation.DTOs
         [Required]
         public string Title { get; set; }
         public Guid UserId { get; set; }
-        public ICollection<MyTask> myTasks { get; set; }
+       // public ICollection<MyTask> myTasks { get; set; }
     }
     public class ProjectViewModel
     {

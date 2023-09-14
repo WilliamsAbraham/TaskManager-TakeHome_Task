@@ -36,8 +36,8 @@ namespace Presentation.Controllers
         }
 
 
-        [HttpGet("/User")]
-        public async Task<ActionResult<APIResponse<UserViewModel>>> GetUserById([FromHeader]Guid id)
+        [HttpGet("/User{id:Guid}")]
+        public async Task<ActionResult<APIResponse<UserViewModel>>> GetUserById(Guid id)
         {
             var userRetrieved = await userRepository.GetUserById(id);
             var user = mapper.Map<UserViewModel>(userRetrieved);
@@ -82,9 +82,9 @@ namespace Presentation.Controllers
         }
 
         //// PUT: NotificationController/Edit/5
-        [HttpPut("/user/Id")]
+        [HttpPut("/user/{id:Guid}")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult<APIResponse<string>>> Edit([FromHeader]Guid id,UserDto userDto)
+        public async Task<ActionResult<APIResponse<string>>> Edit(Guid id,UserDto userDto)
         {
             if (!ModelState.IsValid)
             {
@@ -113,9 +113,9 @@ namespace Presentation.Controllers
         }
 
         //// POST: NotificationController/Delete/5
-        [HttpPost("/UserDeletion")]
+        [HttpPost("/UserDeletion/{id:Guid}")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult<APIResponse<string>>> Delete([FromHeader]Guid id)
+        public async Task<ActionResult<APIResponse<string>>> Delete(Guid id)
         {
             if (!ModelState.IsValid)
             {

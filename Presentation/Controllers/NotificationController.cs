@@ -38,8 +38,8 @@ namespace Presentation.Controllers
         }
 
         //GET: NotificationController/5
-        [HttpGet("/Notification/Id")]
-        public async Task<ActionResult<APIResponse<NotificationViewModel>>> GetNotificationById([FromHeader] Guid id)
+        [HttpGet("/Notification/{id:Guid}")]
+        public async Task<ActionResult<APIResponse<NotificationViewModel>>> GetNotificationById(Guid id)
         {
             var notification = await notificationRepository.GetNoticeById(id);
             var notice = mapper.Map<NotificationViewModel>(notification);
@@ -83,8 +83,8 @@ namespace Presentation.Controllers
         }
 
         //// PUT: NotificationController/Edit/5
-        [HttpPut("/EditNtification/{Id:Guid}")]
-        public async Task< ActionResult<APIResponse<string>>> Edit([FromHeader] Guid id,NotificationDto notificationDto)
+        [HttpPut("/EditNtification/{id:Guid}")]
+        public async Task< ActionResult<APIResponse<string>>> Edit(Guid id,NotificationDto notificationDto)
         {
             if (!ModelState.IsValid)
             {
@@ -113,8 +113,8 @@ namespace Presentation.Controllers
         }
 
         //// POST: NotificationController/Delete/5
-        [HttpPost("/NotificationDeletion/Id")]
-        public async Task<ActionResult<APIResponse<string>>> Delete([FromHeader] Guid id)
+        [HttpPost("/NotificationDeletion/{id:Guid}")]
+        public async Task<ActionResult<APIResponse<string>>> Delete(Guid id)
         {
 
             try

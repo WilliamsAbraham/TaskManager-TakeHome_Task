@@ -29,7 +29,7 @@ namespace Application.Services.NotificationService
         public async Task<Notification> GetNoticeById(Guid id)
         {
             return await repository.GetByIdAsync(id)
-           ?? throw new NotFoundException($"the Notice with id{id} was not found");
+           ?? throw new NotFoundException($"the Notice with id {id} was not found");
 
         }
 
@@ -41,7 +41,7 @@ namespace Application.Services.NotificationService
         public async Task UpdateNotification(Guid id,Notification notification)
         {
             var noticeToUpdate = await repository.GetByIdAsync(id)
-            ?? throw new NotFoundException($"the notice with id{id} was not found");
+            ?? throw new NotFoundException($"the notice with id {id} was not found");
 
             noticeToUpdate.Message = notification.Message;
             noticeToUpdate.IsRead = notification.IsRead;
@@ -51,7 +51,7 @@ namespace Application.Services.NotificationService
         public async Task DeleteNotification(Guid id)
         {
             var noticeToDelete = await repository.GetByIdAsync(id)
-            ?? throw new NotFoundException($"the notice with id{id} was not found");
+            ?? throw new NotFoundException($"the notice with id {id} was not found");
           await  repository.DeleteAsync(noticeToDelete);
         }
     }

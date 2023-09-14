@@ -32,7 +32,7 @@ namespace Application.Services.TaskService
         public async Task<MyTask> GetTaskById(Guid id)
         {
             return await repository.GetByIdAsync(id) 
-            ?? throw new NotFoundException($"The Task with id{id} was not found");
+            ?? throw new NotFoundException($"The Task with id {id} was not found");
         }
 
         public async Task CreateTask(MyTask myTask)
@@ -43,7 +43,7 @@ namespace Application.Services.TaskService
         public async Task UpdateTask(Guid id,MyTask myTask)
         {
             var taskToUpdate = await repository.GetByIdAsync(id) 
-                ?? throw new NotFoundException($"The Task with id{id} was not found");
+                ?? throw new NotFoundException($"The Task with id {id} was not found");
             taskToUpdate.Description = myTask.Description;
             taskToUpdate.Priority = myTask.Priority;
             taskToUpdate.Title = myTask.Title;
@@ -56,7 +56,7 @@ namespace Application.Services.TaskService
         public async Task DeleteTask(Guid id)
         {
             var taskToDelete = await repository.GetByIdAsync(id)
-                ?? throw new NotFoundException($"The Task with id{id} was not found");
+                ?? throw new NotFoundException($"The Task with id {id} was not found");
 
             await repository.DeleteAsync(taskToDelete);
         }

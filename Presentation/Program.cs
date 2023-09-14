@@ -17,7 +17,7 @@ using SendGrid;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var sendgridkey = builder.Configuration[""];
+var sendgridkey = builder.Configuration["SendGridSettings:ApiKey"];
 
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(Program));

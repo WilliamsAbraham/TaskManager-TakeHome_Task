@@ -12,10 +12,10 @@ namespace infrastructure.Externals
 {
     public class SenGridEmailService : IEmailSender
     {
-        private readonly ISendGridClient sendGridClient;
-        public SenGridEmailService(ISendGridClient _sendGridClient)
+        private readonly SendGridClient sendGridClient;
+        public SenGridEmailService(SendGridClient _sendGridClient)
         {
-            sendGridClient = _sendGridClient; 
+           sendGridClient = _sendGridClient; 
         }
         public void SendEmail(string to, string subject, string message)
         {
@@ -24,6 +24,8 @@ namespace infrastructure.Externals
             var msg = MailHelper.CreateSingleEmail(from,gpingto,subject,message,"");
 
             var response = sendGridClient.SendEmailAsync(msg);
+            
+
             if (response.IsCompletedSuccessfully)
             {
                 

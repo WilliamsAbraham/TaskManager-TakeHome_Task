@@ -13,10 +13,10 @@ using static Domain.StaticObjects.NotificationEnums;
 
 namespace Application.Notifications
 {
-    public record TaskCompleteNoticeHandler(MyTask Task):INotification;
+    public record TaskCompleteNotice(MyTask Task):INotification;
 
 
-    public class TaskCompleteNoticNoticeHandler : INotificationHandler<TaskCompleteNoticeHandler>
+    public class TaskCompleteNoticNoticeHandler : INotificationHandler<TaskCompleteNotice>
     {
         private readonly NotificationRepository notificationRepository;
         private readonly IMediator mediator;
@@ -26,7 +26,7 @@ namespace Application.Notifications
             this.mediator = mediator;
         }
 
-        public async Task Handle(TaskCompleteNoticeHandler notification, CancellationToken cancellationToken)
+        public async Task Handle(TaskCompleteNotice notification, CancellationToken cancellationToken)
         {
             var notice = new Notification
             {

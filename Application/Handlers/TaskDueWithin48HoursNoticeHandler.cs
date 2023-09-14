@@ -13,11 +13,11 @@ using static Domain.StaticObjects.NotificationEnums;
 
 namespace Application.Notifications
 {
-    public record TaskDueWithin48HoursNoticeHandler(MyTask Task):INotification;
+    public record TaskDueWithin48HoursNotice(MyTask Task):INotification;
     
     
 
-    public class NotificehHandler : INotificationHandler<TaskDueWithin48HoursNoticeHandler>
+    public class NotificehHandler : INotificationHandler<TaskDueWithin48HoursNotice>
     {
         private readonly NotificationRepository notificationRepository;
         private readonly IMediator mediator;
@@ -28,7 +28,7 @@ namespace Application.Notifications
             mediator = _mediator;
         }
 
-        public async Task Handle(TaskDueWithin48HoursNoticeHandler notification, CancellationToken cancellationToken)
+        public async Task Handle(TaskDueWithin48HoursNotice notification, CancellationToken cancellationToken)
         {
             var notice = new Notification
             {

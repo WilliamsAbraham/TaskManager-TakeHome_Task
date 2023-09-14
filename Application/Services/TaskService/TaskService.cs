@@ -51,7 +51,7 @@ namespace Application.Services.TaskService
                 task.UserId = user.Id;
                 context.Update(task);
                 await context.SaveChangesAsync();
-             await mediator.Publish(new AssignedTaskNoticeHandler(task));
+             await mediator.Publish(new AssignedTaskNotice(task));
                 return task;
         }
 
@@ -95,7 +95,7 @@ namespace Application.Services.TaskService
                await  context.SaveChangesAsync();
 
           //publish this event
-             await mediator.Publish(new TaskCompleteNoticeHandler(completedTask));
+             await mediator.Publish(new TaskCompleteNotice(completedTask));
              return completedTask;
 
 

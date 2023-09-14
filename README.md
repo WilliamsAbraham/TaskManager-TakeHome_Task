@@ -6,7 +6,7 @@
 
 The API is a task management Api 
 
-## We use these packages:
+# We use these packages:
 - EntityFrameworkCore
 - Microsoft.EntityFrameworkCore.SqlServer
 - Microsoft.EntityFrameworkCore.Tools
